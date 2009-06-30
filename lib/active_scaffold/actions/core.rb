@@ -3,6 +3,7 @@ module ActiveScaffold::Actions
     def self.included(base)
       base.class_eval do
         after_filter :clear_flashes
+        helper_method :parent_controller
       end
     end
     def render_field
@@ -116,6 +117,10 @@ module ActiveScaffold::Actions
       active_scaffold_config.model
     end
         
+    def parent_controller
+      self.class.active_scaffold_controller_for(@parent_class_for_inline_form).controller_path if @parent_class_for_inline_form
+    end
+
     # Builds search conditions by search params for column names. This allows urls like "contacts/list?company_id=5".
     def conditions_from_params
       conditions = nil
@@ -146,6 +151,20 @@ module ActiveScaffold::Actions
           "403 Action Not Allowed"
         else
           super
+      end
+    end
+
+    def is_inline_form
+      active_scaffold_constraints.any? do |key, value|
+        column = active_scaffold_config.columns[key]
+        if column.polymorphic_association?
+          value.class.reflect_on_all_associations.any? do |assoc|
+            key == assoc.options[:as] && active_scaffold_config.model.name == assoc.class_name && [:has_one, :belongs_to].include?(assoc.macro)
+          end and @parent_class_for_inline_form = value.class
+        else
+          reverse_macro = column.association.klass.reflect_on_association(column.association.reverse).try(:macro)
+          @parent_class_for_inline_form = column.association.klass if [:has_one, :belongs_to].include? reverse_macro
+        end
       end
     end
   end

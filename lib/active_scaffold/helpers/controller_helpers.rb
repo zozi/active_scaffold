@@ -24,10 +24,8 @@ module ActiveScaffold
       # Parameters to generate url to the main page (override if the ActiveScaffold is used as a component on another controllers page)
       def main_path_to_return
         parameters = {}
-        if params[:parent_controller]
-          parameters[:controller] = params[:parent_controller]
-          parameters[:eid] = params[:parent_controller]
-        end
+        parameters[:controller] = parent_controller if parent_controller
+        parameters[:eid] = params[:parent_controller] if params[:parent_controller]
         parameters[:nested] = nil
         parameters[:parent_column] = nil
         parameters[:parent_id] = nil
