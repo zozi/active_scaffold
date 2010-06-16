@@ -121,7 +121,7 @@ module ActiveScaffold
 
         if column.plural_association?
           # note: we can't create nested scaffolds on :through associations because there's no reverse association.
-          column.set_link('list', :controller => controller.controller_path, :html_options => {:class => column.name}) #unless column.through_association?
+          column.set_link('index', :controller => controller.controller_path, :html_options => {:class => column.name}) #unless column.through_association?
         else
           actions = controller.active_scaffold_config.actions
           column.actions_for_association_links.delete :new unless actions.include? :create
