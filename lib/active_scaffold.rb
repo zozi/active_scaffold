@@ -77,6 +77,7 @@ module ActiveScaffold
       self.active_scaffold_config.configure &block if block_given?
       self.active_scaffold_config._configure_sti unless self.active_scaffold_config.sti_children.nil?
       self.active_scaffold_config._load_action_columns
+      self.setup_nested_links
 
       # defines the attribute read methods on the model, so record.send() doesn't find protected/private methods instead
       klass = self.active_scaffold_config.model
@@ -97,7 +98,7 @@ module ActiveScaffold
             active_scaffold_config.action_links << link
           end
         end
-    end
+      end
       self.active_scaffold_config._add_sti_create_links if self.active_scaffold_config.add_sti_create_links?
     end
 
@@ -130,6 +131,9 @@ module ActiveScaffold
           column.set_link(:none, :controller => controller.controller_path, :crud_type => nil, :label => :create_model, :html_options => {:class => column.name})
         end
       end
+    end
+
+    def setup_nested_links
       active_scaffold_config.action_links.each do |action_link|
         if action_link.action == 'nested' && action_link.parameters[:association]
           model = active_scaffold_config.columns[action_link.parameters.delete(:association)].association.klass

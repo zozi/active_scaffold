@@ -29,7 +29,7 @@ module ActiveScaffold::Config
         association = association.first
       end
       options.reverse_merge! :security_method => :nested_authorized?, :position => :after
-      options.merge! :label => label, :type => :member, :parameters => {:associations => association}
+      options.merge! :label => label, :type => :member, :parameters => {:association => association}
       options[:html_options] ||= {}
       options[:html_options][:class] = [options[:html_options][:class], association].compact.join(' ')
       @core.action_links.add('nested', options)
