@@ -34,7 +34,7 @@ class Config::NestedTest < Test::Unit::TestCase
     assert !link.popup?
     assert !link.confirm?
     assert link.inline?
-    assert_equal :assoc_1, link.parameters[:associations]
+    assert_equal :assoc_1, link.parameters[:association]
     assert_equal 'assoc_1', link.html_options[:class]
     assert_equal :get, link.method
     assert_equal :member, link.type
@@ -52,7 +52,7 @@ class Config::NestedTest < Test::Unit::TestCase
     assert !link.popup?
     assert !link.confirm?
     assert link.inline?
-    assert_equal :assoc_1, link.parameters[:associations]
+    assert_equal :assoc_1, link.parameters[:association]
     assert_equal 'assoc_1', link.html_options[:class]
     assert_equal :get, link.method
     assert_equal :member, link.type
