@@ -19,15 +19,6 @@ module ActiveScaffold::Config
 
     # Add a nested ActionLink
     def add_link(label, association, options = {})
-      if association.is_a? Array
-        msg = "config.nested.add_link with multiple associations is not already supported. "
-        if association.size == 1
-          ::ActiveSupport::Deprecation.warn(msg + "Remove array", caller)
-        else
-          ::ActiveSupport::Deprecation.warn(msg + "The first model will be used", caller)
-        end
-        association = association.first
-      end
       options.reverse_merge! :security_method => :nested_authorized?, :position => :after
       options.merge! :label => label, :type => :member, :parameters => {:association => association}
       options[:html_options] ||= {}
