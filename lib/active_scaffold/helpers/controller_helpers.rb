@@ -14,7 +14,7 @@ module ActiveScaffold
         # :commit is a special rails variable for form buttons
         blacklist = [:adapter, :position, :sort, :sort_direction, :page, :record, :commit, :_method, :authenticity_token, :format]
         unless @params_for
-          @params_for = params.clone.delete_if { |key, value| blacklist.include? key.to_sym if key }
+          @params_for = params.except *blacklist
           @params_for[:controller] = '/' + @params_for[:controller] unless @params_for[:controller].first(1) == '/' # for namespaced controllers
           @params_for.delete(:id) if @params_for[:id].nil?
         end
@@ -23,15 +23,14 @@ module ActiveScaffold
 
       # Parameters to generate url to the main page (override if the ActiveScaffold is used as a component on another controllers page)
       def main_path_to_return
-        parameters = {}
+        parameters = params_for(:action => :index, :id => nil)
         parameters[:controller] = parent_controller if parent_controller
         parameters[:eid] = params[:parent_controller] if params[:parent_controller]
-        parameters[:nested] = nil
-        parameters[:parent_column] = nil
-        parameters[:parent_id] = nil
-        parameters[:action] = "index"
-        parameters[:id] = nil
-        params_for(parameters)
+        active_scaffold_constraints.each do |key, value|
+          association = active_scaffold_config.model.reflect_on_association(key)
+          parameters.delete((association.options[:polymorphic] ? value.class.name : association.class_name).foreign_key)
+        end if parent_controller
+        parameters
       end
     end
   end
