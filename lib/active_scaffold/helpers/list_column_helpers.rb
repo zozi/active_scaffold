@@ -45,7 +45,7 @@ module ActiveScaffold
           end
 
           # setup automatic link
-          if column.autolink && column.singular_association? # link to inline form
+          if column.autolink? && column.singular_association? # link to inline form
             link = action_link_to_inline_form(column, associated)
             return text if link.crud_type.nil?
             url_options[:link] = as_(link.label, :model => column.association.klass.human_name, :parent => column.association.active_record.human_name) if link.crud_type == :create
