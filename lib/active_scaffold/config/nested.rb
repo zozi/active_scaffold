@@ -19,6 +19,7 @@ module ActiveScaffold::Config
 
     # Add a nested ActionLink
     def add_link(label, association, options = {})
+      raise ArgumentError, "#{association.inspect} is not an association column. A common mistake is to specify the foreign key field (like :user_id), instead of the association (:user)." if @core.columns[association].nil? || @core.columns[association].association.nil?
       options.reverse_merge! :security_method => :nested_authorized?, :position => :after
       options.merge! :label => label, :type => :member, :parameters => {:association => association}
       options[:html_options] ||= {}
